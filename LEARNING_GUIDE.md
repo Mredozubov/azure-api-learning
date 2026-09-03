@@ -103,7 +103,8 @@ an Azure timer trigger. The timer uses Azure's schedule monitor, which helps
 avoid duplicate timer work and records scheduled runs.
 
 The files in `infra/` describe the Function App, storage, monitoring, and access
-permissions. They are only a draft until Azure tooling validates them.
+permissions. The Bicep compiler now validates their syntax. A signed-in Azure
+deployment preview is still needed to check them against a real subscription.
 
 ## How to run and observe it
 
@@ -179,8 +180,9 @@ pagination, last-updated display, hourly scheduler, overlap protection,
 structured logs, failure recovery, environment settings, and automated tests.
 
 Prepared but not deployed: Azure Table Storage code, Azure Functions HTTP/timer
-entry points, Bicep resources, managed identity permissions, monitoring limits,
-and removal notes.
+entry points, compiled Bicep resources, managed identity permissions,
+monitoring limits, and removal notes. The Functions HTTP routes have also been
+run locally through Azure Functions Core Tools.
 
 The next major step needs your decision: install Azure CLI and Azure Functions
 Core Tools, validate the Bicep draft, and run a read-only deployment preview.

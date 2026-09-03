@@ -95,9 +95,9 @@ Configuration examples are in `.env.example` and
 
 Local collection, scheduling, failure recovery, logging, website display,
 history pagination, environment configuration, and tests are implemented. The
-Azure code and infrastructure are drafts. They have not been deployed and the
-Bicep files still need validation with Azure tooling.
+Azure code and infrastructure are drafts. The Bicep files compile successfully,
+and the Functions HTTP routes run locally. Nothing has been deployed to Azure.
 
-The next major decision is whether to install the Azure CLI and validate a
-deployment preview. That requires your approval; it does not happen as part of
-normal local development.
+The next local check is the Azure timer with a storage emulator. The next Azure
+step is signing in and generating a deployment preview. Signing in or creating
+resources requires your approval; neither happens during normal local work.

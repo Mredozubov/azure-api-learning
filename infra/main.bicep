@@ -16,6 +16,8 @@ var storageAccountName = 'st${take(token, 20)}'
 var functionAppName = 'func-${environmentName}-${take(token, 8)}'
 var deploymentContainerName = 'app-package-${take(token, 8)}'
 var tableName = 'weatherreports'
+var queueEndpoint = 'https://${storageAccountName}.queue.${environment().suffixes.storage}'
+var tableEndpoint = 'https://${storageAccountName}.table.${environment().suffixes.storage}'
 var tags = {
   project: 'Brooklyn Weather API'
   environment: 'production'
@@ -126,12 +128,12 @@ module functionApp 'br/public:avm/res/web/site:0.16.0' = {
       properties: {
         AzureWebJobsStorage__credential: 'managedidentity'
         AzureWebJobsStorage__blobServiceUri: storage.outputs.primaryBlobEndpoint
-        AzureWebJobsStorage__queueServiceUri: storage.outputs.primaryQueueEndpoint
-        AzureWebJobsStorage__tableServiceUri: storage.outputs.primaryTableEndpoint
+        AzureWebJobsStorage__queueServiceUri: queueEndpoint
+        AzureWebJobsStorage__tableServiceUri: tableEndpoint
         APPLICATIONINSIGHTS_CONNECTION_STRING: insights.outputs.connectionString
         APPLICATIONINSIGHTS_AUTHENTICATION_STRING: 'Authorization=AAD'
         WEATHER_STORAGE_BACKEND: 'azure_table'
-        AZURE_STORAGE_ACCOUNT_URL: storage.outputs.primaryTableEndpoint
+        AZURE_STORAGE_ACCOUNT_URL: tableEndpoint
         AZURE_TABLE_NAME: tableName
         WEATHER_LOCATION_NAME: 'Brooklyn, NY 11234'
         WEATHER_ZIP_CODE: '11234'

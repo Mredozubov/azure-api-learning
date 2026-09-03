@@ -16,6 +16,7 @@ weather.db
 .env
 .env.*
 !.env.example
+local.settings.json
 
 # Editors and operating systems
 .DS_Store
