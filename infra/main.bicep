@@ -49,6 +49,8 @@ module insights 'br/public:avm/res/insights/component:0.6.0' = {
     location: location
     workspaceResourceId: logs.outputs.resourceId
     disableLocalAuth: true
+    retentionInDays: 30
+    samplingPercentage: 5
     tags: tags
   }
 }
@@ -59,10 +61,15 @@ module storage 'br/public:avm/res/storage/storage-account:0.25.0' = {
   params: {
     name: storageAccountName
     location: location
+    skuName: 'Standard_LRS'
     allowBlobPublicAccess: false
     allowSharedKeyAccess: false
     minimumTlsVersion: 'TLS1_2'
     publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
     blobServices: {
       containers: [{ name: deploymentContainerName }]
     }

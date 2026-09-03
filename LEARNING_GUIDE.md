@@ -109,8 +109,9 @@ an Azure timer trigger. The timer uses Azure's schedule monitor, which helps
 avoid duplicate timer work and records scheduled runs.
 
 The files in `infra/` describe the Function App, storage, monitoring, and access
-permissions. The Bicep compiler now validates their syntax. A signed-in Azure
-deployment preview is still needed to check them against a real subscription.
+permissions. Bicep created these resources in North Central US. The deployed
+Function uses its managed identity, rather than a stored password, to reach the
+weather table and deployment storage.
 
 ## How to run and observe it
 
@@ -175,10 +176,12 @@ for Analytics Logs.
 
 The practical estimate for this small portfolio app is **$0 to $1 USD per
 month**, assuming light traffic and that the subscription qualifies for the
-free grants. This is an estimate, not a guarantee. Traffic spikes, verbose
+free grants. A $5 monthly budget now sends warnings at 50%, 80%, and 100%.
+This is an estimate, not a guarantee. Traffic spikes, verbose
 logging, extra apps sharing the grants, networking, or changed Azure prices can
-raise it. Before deployment we will use the signed-in pricing calculator for
-the exact Azure for Students subscription and North Central US prices.
+raise it. The production configuration uses 512 MB on-demand Functions, no
+always-ready instances, locally redundant storage, 5% Application Insights
+sampling, and 30-day log retention.
 
 Sources: [Azure Functions pricing](https://azure.microsoft.com/en-us/pricing/details/functions/),
 [Azure Table Storage pricing](https://azure.microsoft.com/en-us/pricing/details/storage/tables/),
@@ -190,13 +193,11 @@ Finished locally: weather collection, SQLite storage, website, API, history,
 pagination, last-updated display, hourly scheduler, overlap protection,
 structured logs, failure recovery, environment settings, and automated tests.
 
-Prepared but not deployed: Azure Table Storage code, Azure Functions HTTP/timer
-entry points, compiled Bicep resources, managed identity permissions,
-monitoring limits, and removal notes. The Functions HTTP routes have also been
-run locally through Azure Functions Core Tools. The timer has run end to end
-with Azurite as its free local schedule monitor.
+Finished in Azure: Table Storage, Azure Functions HTTP/timer entry points,
+Bicep resources, managed identity permissions, monitoring limits, a monthly
+budget, and the public production website. The timer and website passed an
+end-to-end test using a real production weather report.
 
-The next major step needs your decision: install Azure CLI and Azure Functions
-Core Tools, validate the Bicep draft, and run a read-only deployment preview.
-After we review that preview and the live price estimate together, you can
-separately approve creating resources.
+Next: watch several automatic hourly collections, inspect live logs and costs,
+and confirm that history grows without duplicate hours. Then add a polished
+portfolio description and, if wanted, a custom domain.

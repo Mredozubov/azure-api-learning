@@ -4,9 +4,9 @@ A learning project that collects hourly weather for Brooklyn ZIP code 11234.
 It has a public-style website, a JSON API, searchable history, and an automatic
 collector.
 
-Local development uses SQLite. The production draft uses Azure Functions and
-Azure Table Storage. Nothing in this repository creates Azure resources until
-you choose to run the deployment commands.
+Local development uses SQLite. Production uses Azure Functions and Azure Table
+Storage. The live site is
+<https://func-brooklyn-weather-kscgen6i.azurewebsites.net/>.
 
 Read [LEARNING_GUIDE.md](LEARNING_GUIDE.md) for a plain-English explanation of
 how every part connects.
@@ -113,10 +113,10 @@ app/collector.py            fetches and saves one report
 app/scheduler.py            runs the collector hourly
 app/storage.py              chooses SQLite or Azure Table Storage
 app/database.py             local SQLite storage
-app/azure_table_store.py    future Azure storage
+app/azure_table_store.py    production Azure storage
 app/templates/              website pages
-function_app.py             future Azure HTTP and timer entry points
-infra/                      future Azure infrastructure definitions
+function_app.py             Azure HTTP and timer entry points
+infra/                      Azure infrastructure definitions
 tests/                      automated checks
 ```
 
@@ -126,10 +126,12 @@ Configuration examples are in `.env.example` and
 ## Current status
 
 Local collection, scheduling, failure recovery, logging, website display,
-history pagination, environment configuration, and tests are implemented. The
-Azure code and infrastructure are drafts. The Bicep files compile successfully,
-and the Functions HTTP routes run locally. Nothing has been deployed to Azure.
+history pagination, environment configuration, and tests are implemented.
+Azure production was deployed to North Central US on September 3, 2026. The
+public website/API, hourly timer, Table Storage, managed identity, and
+monitoring are active. The first production report was collected successfully.
 
-The Azure timer has been tested locally with Azurite. The next Azure step is
-signing in and generating a deployment preview. Signing in or creating
-resources requires your approval; neither happens during normal local work.
+A $5 monthly budget watches only `rg-brooklyn-weather` and emails the Azure
+account at 50%, 80%, and 100%. A budget warns us; it does not stop resources.
+See [infra/README.md](infra/README.md) for deployment, inspection, and removal
+commands.
