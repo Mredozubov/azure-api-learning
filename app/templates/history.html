@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Weather history · Brooklyn 11234{% endblock %}
+{% block content %}
+  <section class="history-heading">
+    <div>
+      <p class="eyebrow">Hourly observations</p>
+      <h1>Weather history</h1>
+      <p>Search the growing record for Brooklyn, NY 11234.</p>
+    </div>
+    <form class="date-form" action="/history" method="get">
+      <label>From<input type="date" name="start" value="{{ start }}" required></label>
+      <label>To<input type="date" name="end" value="{{ end }}" required></label>
+      <button type="submit">Search</button>
+    </form>
+  </section>
+
+  {% if error %}
+    <p class="notice error" role="alert">{{ error }}</p>
+  {% elif reports %}
+    <div class="table-summary"><strong>{{ total }}</strong> observations found</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date & time (UTC)</th><th>Conditions</th><th>Temperature</th><th>Humidity</th><th>Wind</th><th>UV</th><th>AQI</th></tr></thead>
+        <tbody>
+          {% for report in reports %}
+            <tr>
+              <td>{{ report.observed_at.strftime('%b %d, %Y · %I:%M %p') }}</td>
+              <td>{{ weather_label(report.weather_code) }}</td>
+              <td>{{ report.temperature_f ~ '°F' if report.temperature_f is not none else '—' }}</td>
+              <td>{{ report.relative_humidity_percent ~ '%' if report.relative_humidity_percent is not none else '—' }}</td>
+              <td>{{ report.wind_speed_mph ~ ' mph' if report.wind_speed_mph is not none else '—' }}</td>
+              <td>{{ report.uv_index if report.uv_index is not none else '—' }}</td>
+              <td><span class="aqi">{{ report.us_aqi if report.us_aqi is not none else '—' }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <nav class="pagination" aria-label="History pages">
+      {% if page > 1 %}<a href="/history?start={{ start }}&end={{ end }}&page={{ page - 1 }}">← Previous</a>{% else %}<span></span>{% endif %}
+      <span>Page {{ page }} of {{ total_pages }}</span>
+      {% if page < total_pages %}<a href="/history?start={{ start }}&end={{ end }}&page={{ page + 1 }}">Next →</a>{% else %}<span></span>{% endif %}
+    </nav>
+  {% else %}
+    <section class="empty-state compact">
+      <h2>No reports in this range</h2>
+      <p>Choose another date range or collect additional hourly reports.</p>
+    </section>
+  {% endif %}
+{% endblock %}

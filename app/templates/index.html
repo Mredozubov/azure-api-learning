@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Current weather · Brooklyn 11234{% endblock %}
+{% block content %}
+  <section class="intro">
+    <p class="eyebrow">Live local archive</p>
+    <h1>Brooklyn, NY <span>11234</span></h1>
+    <p>One clear snapshot every hour, saved for a searchable history.</p>
+  </section>
+
+  {% if report %}
+    <section class="current-card" aria-labelledby="current-heading">
+      <div class="current-primary">
+        <p class="timestamp">Latest observation · {{ report.observed_at.strftime('%b %d, %Y · %I:%M %p UTC') }}</p>
+        <h2 id="current-heading">{{ weather_label(report.weather_code) }}</h2>
+        <p class="temperature">{{ report.temperature_f | round | int if report.temperature_f is not none else '—' }}<sup>°F</sup></p>
+        <p>Feels like {{ (report.apparent_temperature_f | round | int) ~ '°F' if report.apparent_temperature_f is not none else '—' }}</p>
+      </div>
+      <dl class="metrics-grid">
+        <div><dt>Humidity</dt><dd>{{ report.relative_humidity_percent ~ '%' if report.relative_humidity_percent is not none else '—' }}</dd></div>
+        <div><dt>Wind</dt><dd>{{ report.wind_speed_mph ~ ' mph' if report.wind_speed_mph is not none else '—' }}</dd></div>
+        <div><dt>Precipitation</dt><dd>{{ report.precipitation_inches ~ ' in' if report.precipitation_inches is not none else '—' }}</dd></div>
+        <div><dt>UV index</dt><dd>{{ report.uv_index if report.uv_index is not none else '—' }}</dd></div>
+        <div><dt>US AQI</dt><dd>{{ report.us_aqi if report.us_aqi is not none else '—' }}</dd></div>
+        <div><dt>Visibility</dt><dd>{{ report.visibility_miles ~ ' mi' if report.visibility_miles is not none else '—' }}</dd></div>
+      </dl>
+    </section>
+    <div class="page-action">
+      <a class="button" href="/history">Explore weather history <span aria-hidden="true">→</span></a>
+      <span>Updated {{ last_updated_age }} · {{ report.collected_at.strftime('%b %d at %I:%M %p UTC') }}</span>
+    </div>
+  {% else %}
+    <section class="empty-state">
+      <p class="eyebrow">No observations yet</p>
+      <h2>Collect the first weather report.</h2>
+      <p>Run <code>python -m app.collector</code> in your terminal, then refresh this page.</p>
+    </section>
+  {% endif %}
+{% endblock %}

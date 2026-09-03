@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Hourly weather conditions and history for Brooklyn, New York 11234.">
+    <title>{% block title %}Brooklyn Weather{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Brooklyn Weather home">
+        <span class="brand-mark" aria-hidden="true">BW</span>
+        <span>Brooklyn Weather</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="/">Current</a>
+        <a href="/history">History</a>
+        <a href="/docs">API Docs</a>
+      </nav>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>
+      <span>Weather data by <a href="https://open-meteo.com/">Open-Meteo</a></span>
+      <span>Built with FastAPI + SQLite</span>
+    </footer>
+  </body>
+</html>
