@@ -10,7 +10,7 @@
   {% if report %}
     <section class="current-card" aria-labelledby="current-heading">
       <div class="current-primary">
-        <p class="timestamp">Latest observation · {{ report.observed_at.strftime('%b %d, %Y · %I:%M %p UTC') }}</p>
+        <p class="timestamp">Latest observation · {{ eastern_time(report.observed_at).strftime('%b %d, %Y · %I:%M %p %Z') }}</p>
         <h2 id="current-heading">{{ weather_label(report.weather_code) }}</h2>
         <p class="temperature">{{ report.temperature_f | round | int if report.temperature_f is not none else '—' }}<sup>°F</sup></p>
         <p>Feels like {{ (report.apparent_temperature_f | round | int) ~ '°F' if report.apparent_temperature_f is not none else '—' }}</p>
@@ -26,7 +26,7 @@
     </section>
     <div class="page-action">
       <a class="button" href="/history">Explore weather history <span aria-hidden="true">→</span></a>
-      <span>Updated {{ last_updated_age }} · {{ report.collected_at.strftime('%b %d at %I:%M %p UTC') }}</span>
+      <span>Updated {{ last_updated_age }} · {{ eastern_time(report.collected_at).strftime('%b %d at %I:%M %p %Z') }}</span>
     </div>
   {% else %}
     <section class="empty-state">

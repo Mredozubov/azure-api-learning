@@ -7,24 +7,22 @@
       <h1>Weather history</h1>
       <p>Search the growing record for Brooklyn, NY 11234.</p>
     </div>
-    <form class="date-form" action="/history" method="get">
-      <label>From<input type="date" name="start" value="{{ start }}" required></label>
-      <label>To<input type="date" name="end" value="{{ end }}" required></label>
+    <form class="history-search" action="/history" method="get" role="search">
+      <label class="visually-hidden" for="history-query">Search weather history</label>
+      <input id="history-query" type="search" name="q" value="{{ query }}" placeholder="Search date, time, condition, temperature, humidity, wind, UV or AQI">
       <button type="submit">Search</button>
     </form>
   </section>
 
-  {% if error %}
-    <p class="notice error" role="alert">{{ error }}</p>
-  {% elif reports %}
-    <div class="table-summary"><strong>{{ total }}</strong> observations found</div>
+  {% if reports %}
+    <div class="table-summary"><strong>{{ total }}</strong> observations{% if query %} matching “{{ query }}”{% else %} found{% endif %}</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Date & time (UTC)</th><th>Conditions</th><th>Temperature</th><th>Humidity</th><th>Wind</th><th>UV</th><th>AQI</th></tr></thead>
+        <thead><tr><th>Date & time (Eastern)</th><th>Conditions</th><th>Temperature</th><th>Humidity</th><th>Wind</th><th>UV</th><th>AQI</th></tr></thead>
         <tbody>
           {% for report in reports %}
             <tr>
-              <td>{{ report.observed_at.strftime('%b %d, %Y · %I:%M %p') }}</td>
+              <td>{{ eastern_time(report.observed_at).strftime('%b %d, %Y · %I:%M %p %Z') }}</td>
               <td>{{ weather_label(report.weather_code) }}</td>
               <td>{{ report.temperature_f ~ '°F' if report.temperature_f is not none else '—' }}</td>
               <td>{{ report.relative_humidity_percent ~ '%' if report.relative_humidity_percent is not none else '—' }}</td>
@@ -37,14 +35,14 @@
       </table>
     </div>
     <nav class="pagination" aria-label="History pages">
-      {% if page > 1 %}<a href="/history?start={{ start }}&end={{ end }}&page={{ page - 1 }}">← Previous</a>{% else %}<span></span>{% endif %}
+      {% if page > 1 %}<a href="/history?q={{ query | urlencode }}&page={{ page - 1 }}">← Previous</a>{% else %}<span></span>{% endif %}
       <span>Page {{ page }} of {{ total_pages }}</span>
-      {% if page < total_pages %}<a href="/history?start={{ start }}&end={{ end }}&page={{ page + 1 }}">Next →</a>{% else %}<span></span>{% endif %}
+      {% if page < total_pages %}<a href="/history?q={{ query | urlencode }}&page={{ page + 1 }}">Next →</a>{% else %}<span></span>{% endif %}
     </nav>
   {% else %}
     <section class="empty-state compact">
-      <h2>No reports in this range</h2>
-      <p>Choose another date range or collect additional hourly reports.</p>
+      <h2>No matching reports</h2>
+      <p>Try a date, time, condition, temperature, humidity, wind speed, UV, or AQI value.</p>
     </section>
   {% endif %}
 {% endblock %}

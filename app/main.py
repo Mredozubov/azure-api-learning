@@ -9,12 +9,13 @@ from typing import Annotated
 from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import LOCATION_NAME, TIMEZONE, ZIP_CODE
-from app.display import time_ago
+from app.display import eastern_time, report_matches_search, time_ago
 from app.models import StoredWeatherReport, WeatherHistory
 from app.storage import get_latest_report, get_weather_history, initialize_storage
 from app.weather_codes import weather_label
@@ -33,12 +34,38 @@ app = FastAPI(
     description="Hourly weather history for Brooklyn, New York ZIP code 11234.",
     version="0.2.0",
     lifespan=lifespan,
+    docs_url=None,
 )
 
 APP_DIRECTORY = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=APP_DIRECTORY / "static"), name="static")
 templates = Jinja2Templates(directory=APP_DIRECTORY / "templates")
 templates.env.globals["weather_label"] = weather_label
+templates.env.globals["eastern_time"] = eastern_time
+
+
+@app.get("/docs", response_class=HTMLResponse, include_in_schema=False)
+def api_documentation() -> HTMLResponse:
+    """Show Swagger API documentation with a return-to-website link."""
+
+    swagger = get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=f"{app.title} - API documentation",
+    )
+    back_link_style = """
+    <style>
+      .weather-back { display:block; padding:12px 18px; color:white;
+        background:#093f4c; font:600 14px system-ui; text-decoration:none; }
+      .weather-back:hover { background:#0d6173; }
+    </style>
+    """
+    html = swagger.body.decode().replace(
+        "</head>", f"{back_link_style}</head>"
+    )
+    html = html.replace(
+        "<body>", '<body><a class="weather-back" href="/">← Current weather</a>'
+    )
+    return HTMLResponse(html)
 
 
 @app.get("/", response_class=HTMLResponse, tags=["Pages"])
@@ -118,43 +145,39 @@ def read_weather_history(
 @app.get("/history", response_class=HTMLResponse, tags=["Pages"])
 def read_history_page(
     request: Request,
-    start: date | None = None,
-    end: date | None = None,
+    q: Annotated[str, Query(max_length=100)] = "",
     page: Annotated[int, Query(ge=1)] = 1,
 ) -> HTMLResponse:
-    """Show a searchable table of collected weather reports."""
+    """Search every displayed history category with one text field."""
 
-    today = datetime.now(ZoneInfo(TIMEZONE)).date()
-    selected_end = end or today
-    selected_start = start or (selected_end - timedelta(days=7))
-    error = None
-    reports: list[StoredWeatherReport] = []
-    total = 0
-    total_pages = 0
-    if selected_end < selected_start:
-        error = "The end date must be on or after the start date."
+    query = q.strip()
+    start_at = datetime(1970, 1, 1, tzinfo=UTC)
+    end_before = datetime.now(UTC) + timedelta(days=1)
+    if query:
+        all_reports, _ = get_weather_history(
+            ZIP_CODE, start_at, end_before, 1, 1_000_000
+        )
+        matching = [
+            report
+            for report in all_reports
+            if report_matches_search(report, query)
+        ]
+        total = len(matching)
+        offset = (page - 1) * 25
+        reports = matching[offset : offset + 25]
     else:
-        local_zone = ZoneInfo(TIMEZONE)
-        start_at = datetime.combine(
-            selected_start, time.min, local_zone
-        ).astimezone(UTC)
-        end_before = datetime.combine(
-            selected_end + timedelta(days=1), time.min, local_zone
-        ).astimezone(UTC)
         reports, total = get_weather_history(
             ZIP_CODE, start_at, end_before, page, 25
         )
-        total_pages = ceil(total / 25)
+    total_pages = ceil(total / 25)
     return templates.TemplateResponse(
         request=request,
         name="history.html",
         context={
             "reports": reports,
-            "start": selected_start.isoformat(),
-            "end": selected_end.isoformat(),
+            "query": query,
             "page": page,
             "total": total,
             "total_pages": total_pages,
-            "error": error,
         },
     )

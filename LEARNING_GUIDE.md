@@ -69,8 +69,10 @@ puts the data into an HTML template from `app/templates/` and sends the finished
 page to the browser.
 
 The home page reads the newest report and shows how long ago it was updated.
-The history page reads a selected date range. It returns 25 reports at a time,
-so a large search is split into pages.
+All website times are converted to New York local time, including the correct
+EST or EDT label. The history page has one field that searches every displayed
+category. It returns 25 matching reports at a time, so a large search is split
+into pages.
 
 ## Why storage has two implementations
 
