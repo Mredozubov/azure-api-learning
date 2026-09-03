@@ -4,7 +4,7 @@ targetScope = 'subscription'
 param environmentName string = 'brooklyn-weather'
 
 @description('Azure region. We will confirm availability and price before deployment.')
-param location string = 'eastus2'
+param location string = 'northcentralus'
 
 @description('Smallest allowed Flex Consumption memory size.')
 @allowed([512, 2048, 4096])

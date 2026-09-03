@@ -15,10 +15,10 @@ month, but this is not a guarantee. The assumptions and official pricing links
 are explained in `../LEARNING_GUIDE.md`. We will calculate a subscription- and
 region-specific estimate before creating anything.
 
-Before deployment we still must install Azure CLI, sign in, confirm the correct
-subscription, verify that `eastus2` supports Python 3.12 Flex Consumption,
-run a Bicep preview, calculate current regional pricing, and obtain explicit
-approval. To remove the deployed project later, delete the resource group named
+Azure CLI is installed, the Azure for Students subscription is confirmed, and
+its policy permits `northcentralus`, which supports Python Flex Consumption.
+Before deployment we still must review a successful Bicep preview, calculate
+current regional pricing, and obtain explicit approval. To remove the deployed project later, delete the resource group named
 `rg-brooklyn-weather`. That removes its website, table data, logs, and settings.
 We will first download any data worth keeping, then verify the exact resource
 group name, delete it, and confirm that it no longer appears in Azure.

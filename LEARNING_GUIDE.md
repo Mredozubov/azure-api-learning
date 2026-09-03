@@ -178,7 +178,7 @@ month**, assuming light traffic and that the subscription qualifies for the
 free grants. This is an estimate, not a guarantee. Traffic spikes, verbose
 logging, extra apps sharing the grants, networking, or changed Azure prices can
 raise it. Before deployment we will use the signed-in pricing calculator for
-the exact subscription and East US 2 prices.
+the exact Azure for Students subscription and North Central US prices.
 
 Sources: [Azure Functions pricing](https://azure.microsoft.com/en-us/pricing/details/functions/),
 [Azure Table Storage pricing](https://azure.microsoft.com/en-us/pricing/details/storage/tables/),
