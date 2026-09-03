@@ -129,6 +129,11 @@ one JSON success or failure log per attempt. Stop both terminals with `Ctrl+C`.
 For real local hourly operation, run `python -m app.scheduler` without the short
 interval.
 
+To test the Azure timer without paying for Azure, run Azurite in one terminal
+and `func start` from the activated Python environment in another. The
+`local.settings.json.example` schedule fires every five seconds for a short
+demonstration. The Bicep production setting fires once per hour.
+
 ## How to learn from the tests
 
 Run `python -m pytest`. Each file in `tests/` checks one part of the app.
@@ -182,7 +187,8 @@ structured logs, failure recovery, environment settings, and automated tests.
 Prepared but not deployed: Azure Table Storage code, Azure Functions HTTP/timer
 entry points, compiled Bicep resources, managed identity permissions,
 monitoring limits, and removal notes. The Functions HTTP routes have also been
-run locally through Azure Functions Core Tools.
+run locally through Azure Functions Core Tools. The timer has run end to end
+with Azurite as its free local schedule monitor.
 
 The next major step needs your decision: install Azure CLI and Azure Functions
 Core Tools, validate the Bicep draft, and run a read-only deployment preview.

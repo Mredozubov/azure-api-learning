@@ -133,6 +133,7 @@ module functionApp 'br/public:avm/res/web/site:0.16.0' = {
         APPLICATIONINSIGHTS_CONNECTION_STRING: insights.outputs.connectionString
         APPLICATIONINSIGHTS_AUTHENTICATION_STRING: 'Authorization=AAD'
         WEATHER_STORAGE_BACKEND: 'azure_table'
+        WEATHER_TIMER_SCHEDULE: '0 0 * * * *'
         AZURE_STORAGE_ACCOUNT_URL: tableEndpoint
         AZURE_TABLE_NAME: tableName
         WEATHER_LOCATION_NAME: 'Brooklyn, NY 11234'

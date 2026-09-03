@@ -65,6 +65,32 @@ The local `weather.db` file is created automatically and is ignored by Git.
 Collecting the same observed hour again updates that hour instead of adding a
 duplicate.
 
+## Test the Azure timer locally with Azurite
+
+Azurite acts like Azure Storage on this computer and uses no Azure credits.
+Create the ignored local settings file once:
+
+```bash
+cp local.settings.json.example local.settings.json
+```
+
+Start Azurite in terminal 1:
+
+```bash
+azurite --silent --location /tmp/brooklyn-weather-azurite
+```
+
+Start Azure Functions in terminal 2:
+
+```bash
+source .venv/bin/activate
+func start
+```
+
+The example schedule runs every five seconds so you can watch it work. Stop
+both programs with `Ctrl+C` after one or two successful runs. Azure production
+uses the hourly schedule stored in `infra/main.bicep`.
+
 ## Run the tests
 
 ```bash
@@ -98,6 +124,6 @@ history pagination, environment configuration, and tests are implemented. The
 Azure code and infrastructure are drafts. The Bicep files compile successfully,
 and the Functions HTTP routes run locally. Nothing has been deployed to Azure.
 
-The next local check is the Azure timer with a storage emulator. The next Azure
-step is signing in and generating a deployment preview. Signing in or creating
+The Azure timer has been tested locally with Azurite. The next Azure step is
+signing in and generating a deployment preview. Signing in or creating
 resources requires your approval; neither happens during normal local work.

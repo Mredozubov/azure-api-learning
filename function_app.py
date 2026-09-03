@@ -18,7 +18,7 @@ app = func.AsgiFunctionApp(
 
 
 @app.schedule(
-    schedule="0 0 * * * *",
+    schedule="%WEATHER_TIMER_SCHEDULE%",
     arg_name="timer",
     run_on_startup=False,
     use_monitor=True,
