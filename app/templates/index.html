@@ -19,8 +19,10 @@
         <div><dt>Humidity</dt><dd>{{ report.relative_humidity_percent ~ '%' if report.relative_humidity_percent is not none else '—' }}</dd></div>
         <div><dt>Wind</dt><dd>{{ report.wind_speed_mph ~ ' mph' if report.wind_speed_mph is not none else '—' }}</dd></div>
         <div><dt>Precipitation</dt><dd>{{ report.precipitation_inches ~ ' in' if report.precipitation_inches is not none else '—' }}</dd></div>
-        <div><dt>UV index</dt><dd>{{ report.uv_index if report.uv_index is not none else '—' }}</dd></div>
-        <div><dt>US AQI</dt><dd>{{ report.us_aqi if report.us_aqi is not none else '—' }}</dd></div>
+        {% set uv = uv_status(report.uv_index) %}
+        {% set aqi = aqi_status(report.us_aqi) %}
+        <div><dt>UV index</dt><dd><span class="status-pill status-{{ uv[1] }}">{{ report.uv_index if report.uv_index is not none else '—' }} · {{ uv[0] }}</span></dd></div>
+        <div><dt>US AQI</dt><dd><span class="status-pill status-{{ aqi[1] }}">{{ report.us_aqi if report.us_aqi is not none else '—' }} · {{ aqi[0] }}</span></dd></div>
         <div><dt>Visibility</dt><dd>{{ report.visibility_miles ~ ' mi' if report.visibility_miles is not none else '—' }}</dd></div>
       </dl>
     </section>
@@ -28,6 +30,22 @@
       <a class="button" href="/history">Explore weather history <span aria-hidden="true">→</span></a>
       <span>Updated {{ last_updated_age }} · {{ eastern_time(report.collected_at).strftime('%b %d at %I:%M %p %Z') }}</span>
     </div>
+    {% if temperature_chart %}
+      <section class="trend-card" aria-labelledby="trend-heading">
+        <div>
+          <p class="eyebrow">Past 24 hours</p>
+          <h2 id="trend-heading">Temperature trend</h2>
+        </div>
+        <svg class="temperature-chart" viewBox="0 0 700 190" role="img" aria-label="24-hour temperature trend from {{ temperature_chart.minimum | round(1) }} to {{ temperature_chart.maximum | round(1) }} degrees Fahrenheit">
+          <polyline points="{{ temperature_chart.line }}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          {% for point in temperature_chart.points %}
+            <circle cx="{{ point.x }}" cy="{{ point.y }}" r="6"><title>{{ point.time }} · {{ point.temperature | round(1) }}°F</title></circle>
+            <text x="{{ point.x }}" y="{{ point.y - 13 }}" text-anchor="middle">{{ point.temperature | round | int }}°</text>
+            <text class="chart-time" x="{{ point.x }}" y="174" text-anchor="middle">{{ point.time }}</text>
+          {% endfor %}
+        </svg>
+      </section>
+    {% endif %}
   {% else %}
     <section class="empty-state">
       <p class="eyebrow">No observations yet</p>

@@ -39,9 +39,23 @@ h1 span { color: var(--blue); }
 .metrics-grid div { padding: 24px; background: var(--blue-dark); }
 dt { color: #a9c8cd; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
 dd { margin: 9px 0 0; font-family: Georgia, serif; font-size: 1.8rem; }
+.status-pill { display: inline-flex; align-items: center; min-height: 38px; padding: 7px 12px; border-radius: 999px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .9rem; font-weight: 800; }
+.status-good { color: #154f2b; background: #bfe5c9; }
+.status-moderate { color: #59430a; background: #f6d978; }
+.status-sensitive { color: #663614; background: #f3b36d; }
+.status-unhealthy { color: #681f20; background: #ee9997; }
+.status-very-unhealthy { color: #4a1c59; background: #d7addf; }
+.status-hazardous { color: white; background: #6b1f38; }
+.status-neutral { color: #34454e; background: #d7dedd; }
 .page-action { margin-top: 25px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .88rem; }
 .button, button { display: inline-flex; align-items: center; gap: 24px; padding: 14px 18px; border: 0; border-radius: 9px; background: var(--sun); color: var(--ink); font: inherit; font-weight: 800; text-decoration: none; cursor: pointer; }
 .button:hover, button:hover { background: #ffc95e; }
+.trend-card { margin-top: 34px; padding: 28px 32px 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+.trend-card h2 { margin-bottom: 8px; font-family: Georgia, serif; font-size: 2rem; font-weight: 500; }
+.temperature-chart { display: block; width: 100%; height: auto; color: var(--blue); overflow: visible; }
+.temperature-chart circle { fill: var(--sun); stroke: var(--blue-dark); stroke-width: 3; }
+.temperature-chart text { fill: var(--ink); font-size: 14px; font-weight: 800; }
+.temperature-chart .chart-time { fill: var(--muted); font-size: 12px; font-weight: 650; }
 .history-heading { margin-bottom: 34px; }
 .history-heading h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
 .history-search { display: flex; gap: 10px; width: 100%; margin-top: 28px; padding: 8px; border: 1px solid var(--line); background: var(--panel); border-radius: 14px; box-shadow: 0 10px 30px rgba(18, 42, 48, .07); }

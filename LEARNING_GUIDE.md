@@ -74,6 +74,10 @@ EST or EDT label. The history page has one field that searches every displayed
 category. It returns 25 matching reports at a time, so a large search is split
 into pages.
 
+The temperature chart is an SVG drawn directly by the browser from points that
+Python calculates. It needs no chart company, account, or extra paid service.
+AQI and UV helper functions turn numbers into labels and color classes.
+
 ## Why storage has two implementations
 
 The rest of the app should not care where reports live. It asks the same four

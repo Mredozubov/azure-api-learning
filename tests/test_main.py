@@ -38,6 +38,9 @@ def test_home_page_shows_current_weather(monkeypatch) -> None:
         us_aqi=42,
     )
     monkeypatch.setattr("app.main.get_latest_report", lambda _zip_code: report)
+    monkeypatch.setattr(
+        "app.main.get_weather_history", lambda *_args: ([report], 1)
+    )
 
     response = client.get("/")
 
@@ -47,6 +50,9 @@ def test_home_page_shows_current_weather(monkeypatch) -> None:
     assert "Partly cloudy" in response.text
     assert "78" in response.text
     assert "12:00 PM EDT" in response.text
+    assert "Temperature trend" in response.text
+    assert "42 · Good" in response.text
+    assert "4.2 · Moderate" in response.text
 
 
 def test_health_check() -> None:

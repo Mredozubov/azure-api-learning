@@ -54,7 +54,8 @@ Open these pages:
 Website times use New York local time, displaying EST or EDT correctly for the
 date. History has one search field for dates, times, conditions, temperatures,
 humidity, wind, UV, AQI, ZIP code, and provider. API Docs includes a link back
-to the current-weather page.
+to the current-weather page. The home page also charts the most recent 24 hours
+of temperature and labels UV/AQI levels with clear colors.
 
 The weather source is [Open-Meteo](https://open-meteo.com/). The app stores
 weather, UV index, and U.S. air-quality index. Pollen is deferred because the

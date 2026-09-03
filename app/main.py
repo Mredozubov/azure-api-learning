@@ -15,7 +15,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import LOCATION_NAME, TIMEZONE, ZIP_CODE
-from app.display import eastern_time, report_matches_search, time_ago
+from app.display import (
+    aqi_status,
+    eastern_time,
+    report_matches_search,
+    temperature_chart,
+    time_ago,
+    uv_status,
+)
 from app.models import StoredWeatherReport, WeatherHistory
 from app.storage import get_latest_report, get_weather_history, initialize_storage
 from app.weather_codes import weather_label
@@ -42,6 +49,8 @@ app.mount("/static", StaticFiles(directory=APP_DIRECTORY / "static"), name="stat
 templates = Jinja2Templates(directory=APP_DIRECTORY / "templates")
 templates.env.globals["weather_label"] = weather_label
 templates.env.globals["eastern_time"] = eastern_time
+templates.env.globals["aqi_status"] = aqi_status
+templates.env.globals["uv_status"] = uv_status
 
 
 @app.get("/docs", response_class=HTMLResponse, include_in_schema=False)
@@ -73,12 +82,23 @@ def read_home(request: Request) -> HTMLResponse:
     """Show the newest weather report or a useful empty state."""
 
     report = get_latest_report(ZIP_CODE)
+    chart = None
+    if report:
+        chart_reports, _ = get_weather_history(
+            ZIP_CODE,
+            report.observed_at - timedelta(hours=23),
+            report.observed_at + timedelta(hours=1),
+            1,
+            24,
+        )
+        chart = temperature_chart(chart_reports)
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={
             "report": report,
             "last_updated_age": time_ago(report.collected_at) if report else None,
+            "temperature_chart": chart,
         },
     )
 
