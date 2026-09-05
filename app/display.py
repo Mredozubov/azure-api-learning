@@ -1,6 +1,7 @@
 """Small presentation helpers used by the website."""
 
 from datetime import UTC, datetime
+from math import ceil
 from zoneinfo import ZoneInfo
 
 from app.config import TIMEZONE
@@ -90,6 +91,7 @@ def temperature_chart(
     chart_width = width - (horizontal_padding * 2)
     chart_height = height - (vertical_padding * 2)
     divisor = max(1, len(values) - 1)
+    label_interval = max(1, ceil(divisor / 6))
     points = []
     for index, (report, temperature) in enumerate(zip(values, temperatures)):
         x = horizontal_padding + (index / divisor) * chart_width
@@ -100,6 +102,7 @@ def temperature_chart(
                 "y": round(y, 1),
                 "temperature": temperature,
                 "time": eastern_time(report.observed_at).strftime("%I %p"),
+                "show_time": index % label_interval == 0 or index == len(values) - 1,
             }
         )
     return {

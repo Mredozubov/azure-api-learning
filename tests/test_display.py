@@ -49,3 +49,32 @@ def test_temperature_chart_orders_reports_oldest_first() -> None:
     assert chart["minimum"] == 68
     assert chart["maximum"] == 70
     assert chart["points"][0]["temperature"] == 68
+
+
+def test_temperature_chart_limits_time_labels_for_24_hours() -> None:
+    newest = StoredWeatherReport(
+        id=24,
+        observed_at=datetime(2026, 9, 4, 4, tzinfo=UTC),
+        collected_at=datetime(2026, 9, 4, 4, 1, tzinfo=UTC),
+        location_name="Brooklyn",
+        zip_code="11234",
+        temperature_f=70,
+    )
+    reports = [
+        newest.model_copy(
+            update={
+                "id": 24 - index,
+                "observed_at": newest.observed_at - timedelta(hours=index),
+                "temperature_f": 70 + index,
+            }
+        )
+        for index in range(24)
+    ]
+
+    chart = temperature_chart(reports)
+
+    assert chart is not None
+    labeled_points = [point for point in chart["points"] if point["show_time"]]
+    assert len(labeled_points) == 7
+    assert chart["points"][0]["show_time"] is True
+    assert chart["points"][-1]["show_time"] is True

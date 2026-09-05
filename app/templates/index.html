@@ -41,7 +41,9 @@
           {% for point in temperature_chart.points %}
             <circle cx="{{ point.x }}" cy="{{ point.y }}" r="6"><title>{{ point.time }} · {{ point.temperature | round(1) }}°F</title></circle>
             <text x="{{ point.x }}" y="{{ point.y - 13 }}" text-anchor="middle">{{ point.temperature | round | int }}°</text>
-            <text class="chart-time" x="{{ point.x }}" y="174" text-anchor="middle">{{ point.time }}</text>
+            {% if point.show_time %}
+              <text class="chart-time" x="{{ point.x }}" y="174" text-anchor="middle">{{ point.time }}</text>
+            {% endif %}
           {% endfor %}
         </svg>
       </section>
